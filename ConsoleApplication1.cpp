@@ -66,7 +66,7 @@ int main2() {
 
     cout << "\n\nOR\n";
     list<float>k = { 1.2,7,8,6,5,2,9,10,3,1.1 };
-    cout << "\nSort: ";
+    cout << "\nRes: ";
     k.sort();
     list<float>k1 = k;
     k.reverse();
