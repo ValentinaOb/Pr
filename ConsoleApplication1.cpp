@@ -54,32 +54,20 @@ private:
     int count; 
 
     Element<T>* Move(int index);
-
     void Copy(const List<T>& obj);
 
 public:
     List();
-
     List(const List& obj);
-
     List<T>& operator=(const List& obj);
-
     ~List();
-
     void SetElement(T _data, int index);
-
     void AddEnd(T _data);
-
     void AddBegin(T _data);
-
     void Insert(T _data, int index);
-
     void Del(int index);
-
     void Clear();
-
     void Reverse();
-
     void Print(string msg);
 };
 
@@ -271,7 +259,7 @@ void List<T>::Reverse()
 template <class T>
 void List<T>::Print(string msg)
 {
-    cout << msg << " => ";
+    cout << msg << " - ";
 
     Element<T>* t = begin;
     for (int i = 0; i < count; i++)
