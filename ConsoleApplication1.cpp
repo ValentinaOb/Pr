@@ -61,10 +61,8 @@ public:
     List(const List& obj);
     List<T>& operator=(const List& obj);
     ~List();
-    void SetElement(T _data, int index);
     void AddEnd(T _data);
     void AddBegin(T _data);
-    void Insert(T _data, int index);
     void Del(int index);
     void Clear();
     void Reverse();
@@ -165,42 +163,6 @@ void List<T>::AddBegin(T _data)
         {
             begin = end = t;
         }
-
-        count++;
-    }
-    catch (bad_alloc e)
-    {
-        cout << e.what() << endl;
-    }
-}
-template <class T>
-void List<T>::Insert(T _data, int index)
-{
-
-    if (index == count)
-    {
-        AddEnd(_data);
-        return;
-    }
-
-    if (index == 0)
-    {
-        AddBegin(_data);
-        return;
-    }
-
-    try
-    {
-        Element<T>* itemPrev = Move(index - 1);
-
-        Element<T>* item = Move(index);
-
-        Element<T>* t = new Element<T>;
-        t->data = _data;
-        t->next = item;
-        t->prev = itemPrev;
-        itemPrev->next = t;
-        item->prev = t;
 
         count++;
     }
