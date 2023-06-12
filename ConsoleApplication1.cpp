@@ -5,6 +5,10 @@
 #include <iterator>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <algorithm>
+#include <map>
+#include <numeric>
 
 using namespace std;
 
@@ -37,227 +41,42 @@ int main1()
     return 0;
 }
 
-
-template <class T>
-struct Element
-{
-    T data; 
-    Element<T>* next;
-    Element<T>* prev;
-};
-template <class T>
-class List
-{
-private:
-    Element<T>* begin; 
-    Element<T>* end; 
-    int count; 
-
-    Element<T>* Move(int index);
-    void Copy(const List<T>& obj);
-
-public:
-    List();
-    List(const List& obj);
-    List<T>& operator=(const List& obj);
-    ~List();
-    void AddEnd(T _data);
-    void AddBegin(T _data);
-    void Del(int index);
-    void Clear();
-    void Reverse();
-    void Print(string msg);
-};
-
-template <class T>
-Element<T>* List<T>::Move(int index)
-{
-    Element<T>* t = begin;
-
-    for (int i = 0; i < index; i++)
-        t = t->next;
-
-    return t;
-}
-template <class T>
-void List<T>::Copy(const List<T>& obj)
-{
-    Clear();
-
-    Element<T>* t = obj.begin;
-
-    while (t != nullptr)
-    {
-        AddEnd(t->data);
-        t = t->next;
-    }
-}
-template <class T>
-List<T>::List()
-{
-    begin = end = nullptr;
-    count = 0;
-}
-template <class T>
-List<T>::List(const List& obj)
-{
-    Copy(obj);
-}
-template <class T>
-List<T>& List<T>::operator=(const List& obj)
-{
-    Copy(obj);
-    return *this;
-}
-template <class T>
-List<T>::~List()
-{
-    Clear();
-}
-template <class T>
-void List<T>::AddEnd(T _data)
-{
-    try
-    {
-        Element<T>* t = new Element<T>;
-        t->next = nullptr; 
-        t->prev = end; 
-        t->data = _data; 
-
-        if (end != nullptr)
-            end->next = t;
-
-        if (count == 0)
-        {
-            begin = end = t;
-        }
-        else
-        {
-            end = t;
-        }
-
-        count++;
-    }
-    catch (bad_alloc e)
-    {
-        cout << e.what() << endl;
-    }
-}
-template <class T>
-void List<T>::AddBegin(T _data)
-{
-    try
-    {
-        Element<T>* t = new Element<T>;
-        t->data = _data; 
-        t->prev = nullptr; 
-
-        t->next = begin;
-
-        if (count > 0)
-        {
-            begin->prev = t;
-            begin = t;
-        }
-        else
-        {
-            begin = end = t;
-        }
-
-        count++;
-    }
-    catch (bad_alloc e)
-    {
-        cout << e.what() << endl;
-    }
-}
-template <class T>
-void List<T>::Del(int index)
-{
-    if (count == 0) return;
-
-    Element<T>* item = Move(index);
-
-    Element<T>* itemPrev = item->prev;
-
-    Element<T>* itemNext = item->next;
-
-    if ((count > 1) && (itemPrev != nullptr))
-        itemPrev->next = itemNext; 
-
-    if ((itemNext != nullptr) && (count > 1))
-        itemNext->prev = itemPrev;
-
-    if (index == 0)
-        begin = itemNext;
-
-    if (index == count - 1)
-        end = itemPrev;
-
-    delete item;
-
-    count--;
-}
-template <class T>
-void List<T>::Clear()
-{
-    int n = count; 
-    for (int i = 0; i < n; i++)
-        Del(0);
-}
-template <class T>
-void List<T>::Reverse()
-{
-    List<T> L;
-    Element<T>* t = begin;
-
-    while (t != nullptr)
-    {
-        L.AddBegin(t->data);
-        t = t->next;
-    }
-    *this = L;
-}
-template <class T>
-void List<T>::Print(string msg)
-{
-    cout << msg << " - ";
-
-    Element<T>* t = begin;
-    for (int i = 0; i < count; i++)
-    {
-        cout << t->data << " ";
-        t = t->next;
-    }
-    cout << endl;
-}
-
 int main2()
 {
-    List<double> L;
-
+    list<double>L;
+    cout << "Input n: ";
+    int n, e;
+    cin >> n;
     cout << "Input elements: ";
-    int i = 0, i1 = 0, i2=0, i3 = 0, i4 = 0;
-    cin >> i >> i1 >> i2 >> i3 >> i4;
-    L.AddBegin(i);
-    L.AddEnd(i1);
-    L.AddEnd(i2);
-    L.AddEnd(i3);
-    L.AddEnd(i4);
-    L.Print("L: ");
+    for (int i = 0; i < n; i++) {
+        cin >> e;
+        L.push_back(e);
+    }
+    cout << "L: ";
+    for (auto i : L) cout << i << " ";
 
-    L.Reverse();
-    L.Print("L: ");
+    L.reverse();
+    cout << "\nL: ";
+    for (auto i : L) cout << i << " ";
 
-    List<double> L1 = L;
-    L1.Print("L1: ");
+    list<double> L1 = L;
+    cout << "\nL1: ";
+    for (auto i : L1) cout << i << " ";
+    L.reverse();
+    L1.splice(L1.end(), L);
 
-    L1.AddEnd(i);
-    L1.AddEnd(i1);
-    L1.AddEnd(i2);
-    L1.AddEnd(i3);
-    L1.AddEnd(i4);
-    L1.Print("L1: ");
+    cout << "\n\nL1: ";
+    int t = 0;
+    for (auto i : L1) 
+    {
+        if(t==5) 
+        {
+            cout << "\n";
+            t = 0;
+        }
+        cout << i << " ";
+        t += 1;
+    }
 
     return 0;
 }
@@ -280,6 +99,219 @@ int main3()
     return 0;
 }
 
+int main4() {
+
+    vector<float> v{};
+    ifstream n("name1.txt", std::ios::in | std::ifstream::binary);
+    istream_iterator<float> In{n};
+    istream_iterator<float> end{};
+    copy(In, end, std::back_inserter(v));
+
+
+    std::ofstream n1("name2.txt", std::ios::out | std::ofstream::binary);
+    std::ostream_iterator<float> Out{n1, "\n"};
+    std::copy_if(v.begin(), v.end(), Out, [](int i) {return i != 0; });
+    
+    return 0;
+}
+
+int main5() {
+    list<int> m;
+    cout << "Input n: ";
+    int n, e;
+    cin >> n;
+    cout << "Input elements: ";
+    for (int i = 0; i < n; i++) {
+        cin >> e;
+        m.push_back(e);
+    }
+    cout << "The original list is : ";
+    for (auto i = m.begin(); i != m.end(); i++) {
+        cout << *i << " ";
+    }
+    cout << "\n";
+
+    list<int>::iterator it = m.end();
+    int j = (size(m) / 2);
+    advance(it, -j);
+    list<int> m1;
+    for (auto i = m.begin(); i != it; i++) {
+        m1.push_back(*i);
+    }
+
+    it = m1.end();
+    advance(it, -j);
+    replace_copy_if(m1.begin(), m1.end(),
+        it,
+        [](int k) { return k < 0; }, 0);
+
+    reverse(m1.begin(), m1.end());
+    for (auto i = m1.begin(); i != m1.end(); i++) {
+
+        m.push_back(*i);
+    }
+    cout << "New : ";
+    for (auto i = m.begin(); i != m.end(); i++) {
+        cout << *i << " ";
+    }
+    cout << "\n";
+
+    return 0;
+}
+
+int main6() {
+    vector<int> a = { 1, 2, 3, 5, 10, 11, 12, 13, 14, 15,20, 21 };
+    cout << "V: ";
+    for (auto i = a.begin(); i != a.end(); i++) {
+        cout << *i << " ";
+    }
+    cout << "\n\n";
+    map<int, int> m;
+    int s0 = 0;
+    int s = 0;
+    int s1 = 0;
+    int s2 = 0;
+    int s3 = 0;
+    int s4 = 0;
+    int s5 = 0;
+    int s6 = 0;
+    int s7 = 0;
+    int s8 = 0;
+
+    int k0 = 0;
+    int k = 0;
+    int k1 = 0;
+    int k2 = 0;
+    int k3 = 0;
+    int k4 = 0;
+    int k5 = 0;
+    int k6 = 0;
+    int k7 = 0;
+    int k8 = 0;
+
+    vector<int> b0;
+    vector<int> b;
+    vector<int> b1;
+    vector<int> b2;
+    vector<int> b3;
+    vector<int> b4;
+    vector<int> b5;
+    vector<int> b6;
+    vector<int> b7;
+    vector<int> b8;
+
+    for (int i = 0; i < size(a); i++) {
+        if (a[i] % 10) {
+            if ((a[i] % 10) == 1) {
+                b.push_back(a[i]);
+                k += 1;
+            }
+
+            if ((a[i] % 10) == 2) {
+                b1.push_back(a[i]);
+                k1 += 1;
+            }
+
+            if ((a[i] % 10) == 3) {
+                b2.push_back(a[i]);
+                k2 += 1;
+            }
+
+            if ((a[i] % 10) == 4) {
+                b3.push_back(a[i]);
+                k3 += 1;
+            }
+
+            if ((a[i] % 10) == 5) {
+                b4.push_back(a[i]);
+                k4 += 1;
+            }
+
+            if ((a[i] % 10) == 6) {
+                b5.push_back(a[i]);
+                k5 += 1;
+            }
+
+            if ((a[i] % 10) == 7) {
+                b6.push_back(a[i]);
+                k6 += 1;
+            }
+
+            if ((a[i] % 10) == 8) {
+                b7.push_back(a[i]);
+                k7 += 1;
+            }
+
+            if ((a[i] % 10) == 9) {
+                b8.push_back(a[i]);
+                k8 += 1;
+            }
+        }
+        else {
+            b0.push_back(a[i]);
+            k0 += 1;
+        }
+    }
+    s0 = accumulate(b0.begin(), b0.end(), 0);
+    s = accumulate(b.begin(), b.end(), -1);
+    s1 = accumulate(b1.begin(), b1.end(), -2);
+    s2 = accumulate(b2.begin(), b2.end(), -3);
+    s3 = accumulate(b3.begin(), b3.end(), -4);
+    s4 = accumulate(b4.begin(), b4.end(), -5);
+    s5 = accumulate(b5.begin(), b5.end(), -6);
+    s6 = accumulate(b6.begin(), b6.end(), -7);
+    s7 = accumulate(b7.begin(), b7.end(), -8);
+    s8 = accumulate(b8.begin(), b8.end(), -9);
+
+    if (k0 == 1)s0 = 0;
+    if ((s == -1) || (k == 1))s = 0;
+    if ((s1 == -2) || (k1 == 1))s1 = 0;
+    if ((s2 == -3) || (k2 == 1))s2 = 0;
+    if ((s3 == -4) || (k3 == 1))s3 = 0;
+    if ((s4 == -5) || (k4 == 1))s4 = 0;
+    if ((s5 == -6) || (k5 == 1))s5 = 0;
+    if ((s6 == -7) || (k6 == 1))s6 = 0;
+    if ((s7 == -8) || (k7 == 1))s7 = 0;
+    if ((s8 == -9) || (k8 == 1))s8 = 0;
+
+
+    m.insert(pair<int, int>(0, s0));
+    m.insert(pair<int, int>(1, s));
+    m.insert(pair<int, int>(2, s1));
+    m.insert(pair<int, int>(3, s2));
+    m.insert(pair<int, int>(4, s3));
+    m.insert(pair<int, int>(5, s4));
+    m.insert(pair<int, int>(6, s5));
+    m.insert(pair<int, int>(7, s6));
+    m.insert(pair<int, int>(8, s7));
+    m.insert(pair<int, int>(9, s8));
+
+
+    map<int, int>::iterator it;
+    it = m.find(0);
+    cout << it->first << " : " << it->second << endl;
+    it = m.find(1);
+    cout << it->first << " : " << it->second << endl;
+    it = m.find(2);
+    cout << it->first << " : " << it->second << endl;
+    it = m.find(3);
+    cout << it->first << " : " << it->second << endl;
+    it = m.find(4);
+    cout << it->first << " : " << it->second << endl;
+    it = m.find(5);
+    cout << it->first << " : " << it->second << endl;
+    it = m.find(6);
+    cout << it->first << " : " << it->second << endl;
+    it = m.find(7);
+    cout << it->first << " : " << it->second << endl;
+    it = m.find(8);
+    cout << it->first << " : " << it->second << endl;
+    it = m.find(9);
+    cout << it->first << " : " << it->second << endl;
+
+    return 0;
+}
+
 int main()
 {
     int n;
@@ -290,6 +322,9 @@ e: cin >> n;
     case 1: main1(); break;
     case 2: main2(); break;
     case 3: main3(); break;
+    case 4: main4(); break;
+    case 5: main5(); break;
+    case 6: main6(); break;
     default: cout << "Error\n"; goto e;
     }
 
